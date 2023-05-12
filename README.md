@@ -1,1 +1,1 @@
-# C# and .NET Core projects
+# C# and .NET Core Projects
