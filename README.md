@@ -1,7 +1,1 @@
-# First-Day-Task
-1101010
-sdsa
-101
-123
-asdas
-365
+# C# and .NET Core Projects
