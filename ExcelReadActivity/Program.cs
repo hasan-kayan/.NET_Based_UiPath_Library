@@ -28,6 +28,23 @@ namespace ExcelReadActivity
 
             // So far we have created an empty workbook and opened an exsiting one 
 
+            // Declear worksheet object
+
+            Worksheet worksheet = sampleWorkbook.Worksheets["sheet1"]; 
+
+            // change value of one cell 
+
+            worksheet.Range["A1"].Value = "Deneme Outt";
+
+            double[] SalesDate = { 4.3, 4, 21, 324, 17 };
+
+            for (int i = 0; i < SalesDate.Length; i++)
+            {
+                worksheet.Range["A" + (2+i)].Value= SalesDate[i];
+            }
+
+
+
 
 
 
