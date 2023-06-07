@@ -30,9 +30,9 @@ namespace ExcelReadApp
 
 
 
-            try
+            try // For possibel mistakes, try-catch 
             {
-                Range excelRange = worksheet.Range[range];
+                Range excelRange = worksheet.Range[range]; // Range structre is embedded into lib 
                 object[,] values = excelRange.Value;
 
                 int rowCount = values.GetLength(0);
@@ -67,3 +67,5 @@ namespace ExcelReadApp
 }
 
 // C:\Users\hasan\Desktop\excel applications try\deneme.xlsx
+// BIG DATA //
+// C:\Users\hasan\Desktop\excel applications try\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx
