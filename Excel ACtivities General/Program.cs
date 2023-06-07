@@ -43,6 +43,8 @@ namespace ExcelReadActivity
                 worksheet.Range["A" + (2+i)].Value= SalesDate[i];
             }
 
+            // Write same data to multiple cells 
+
 
 
 
