@@ -33,17 +33,18 @@ namespace ExcelReadApp
             try // For possibel mistakes, try-catch 
             {
                 Range excelRange = worksheet.Range[range]; // Range structre is embedded into lib 
-                object[,] values = excelRange.Value;
+                object[,] values = excelRange.Value; // Object arry to keep readed values 
 
+                // etrieves the number of rows and columns 
                 int rowCount = values.GetLength(0);
                 int columnCount = values.GetLength(1);
 
                 Console.WriteLine($"Reading range: {range}");
                 Console.WriteLine();
 
-                for (int row = 1; row <= rowCount; row++)
+                for (int row = 1; row <= rowCount; row++) //  row count and loop
                 {
-                    for (int column = 1; column <= columnCount; column++)
+                    for (int column = 1; column <= columnCount; column++) // column count loop 
                     {
                         object value = values[row, column];
                         Console.Write(value + "\t");
@@ -51,7 +52,7 @@ namespace ExcelReadApp
                     Console.WriteLine();
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) // Possible error catch 
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
