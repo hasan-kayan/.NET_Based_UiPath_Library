@@ -22,10 +22,10 @@ namespace ExcelApp_Write_Range
             Console.WriteLine("Please enter the worksheet name you want to work on:");
             string worksheetName = Console.ReadLine();
 
-            Console.Write("Enter the values separated by commas: ");
+            Console.Write("Enter the values separated by commas: "); // Take input data from user 
             string input = Console.ReadLine();
 
-            string[] Data = input.Split(',');
+            string[] Data = input.Split(','); // One line string will be seperated
 
             Application app = new Application();
             app.Visible = true;
@@ -33,15 +33,21 @@ namespace ExcelApp_Write_Range
             Workbook existingWorkbook = app.Workbooks.Open(filePath); // Open file to read
             Worksheet worksheet = existingWorkbook.Worksheets[worksheetName];
 
-            worksheet.Range["A1"].Value = "Deneme Outt";
+            
 
             double[] SalesDate = { 4.3, 4, 21, 324, 17 };
 
             for (int i = 0; i < Data.Length; i++)
             {
                 worksheet.Range[range + (2 + i)].Value = Data[i];
-            };
+            }
 
+            existingWorkbook.Save();
+            existingWorkbook.Close();
+            app.Quit();
+
+           
         }
     }
 }
+// C:\Users\hasan\Desktop\excel applications try\deneme.xlsx
