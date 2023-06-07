@@ -1,5 +1,9 @@
 ﻿using System;
-using Excel = Microsoft.Office.Interop.Excel;
+using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
+using Application = Microsoft.Office.Interop.Excel.Application;
 
 namespace ExcelReadApp
 {
@@ -7,19 +11,28 @@ namespace ExcelReadApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter the range to read (e.g., A1:B5):");
-            string range = Console.ReadLine();
 
             Console.WriteLine("Enter the path to the Excel file:");
             string filePath = Console.ReadLine();
 
-            Excel.Application excelApp = new Excel.Application();
-            Excel.Workbook workbook = excelApp.Workbooks.Open(filePath);
-            Excel.Worksheet worksheet = workbook.ActiveSheet;
+            Console.WriteLine("Enter the range to read (e.g., A1:B5):");
+            string range = Console.ReadLine();
+
+            Console.WriteLine("Please enter the worksheet name you want to work on:");
+            string worksheetName = Console.ReadLine();
+            
+
+            Application app = new Application();
+            app.Visible = true;
+
+            Workbook existingWorkbook = app.Workbooks.Open(filePath); // Open file to read
+            Worksheet worksheet = existingWorkbook.Worksheets[worksheetName]; // Declare Worksheet
+
+
 
             try
             {
-                Excel.Range excelRange = worksheet.Range[range];
+                Range excelRange = worksheet.Range[range];
                 object[,] values = excelRange.Value;
 
                 int rowCount = values.GetLength(0);
@@ -44,8 +57,8 @@ namespace ExcelReadApp
             }
             finally
             {
-                workbook.Close();
-                excelApp.Quit();
+                existingWorkbook.Close();
+                app.Quit();
             }
 
             Console.ReadLine();
@@ -53,4 +66,4 @@ namespace ExcelReadApp
     }
 }
 
-// C:\Users\hasan\Desktop\excel applications try\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx
+// C:\Users\hasan\Desktop\excel applications try\deneme.xlsx

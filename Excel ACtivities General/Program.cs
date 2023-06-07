@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Services;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Excel; // .NET version excel usage microsoft lib
+using Microsoft.SqlServer.Server;
 // For Excel applications C# has  Microsoft.Office.Interop.Excel namespace, namespace using interface architecture
 // Namespace includes Application class which represents Excel Application
 
@@ -22,9 +24,17 @@ namespace ExcelReadActivity
             Workbook sampleWorkbook = app.Workbooks.Add(); // Creating Workbook, added application to manage
 
 
+            Console.WriteLine("Enter Path:");
+            string pat = Console.ReadLine();
+
+            Console.WriteLine("Enter sheet:");
+            string sheet = Console.ReadLine();
+
+
+
             // So far we have created an empty Workbook, app is representing Excel file so we have created a new Excel file 
 
-            Workbook exsistingWorkbook = app.Workbooks.Open(@"C:\Users\hasan\Desktop\New Microsoft Excel Worksheet.xlsx "); // Thats how you can open an existing workbook 
+            Workbook exsistingWorkbook = app.Workbooks.Open(pat); // Thats how you can open an existing workbook 
 
             // So far we have created an empty workbook and opened an exsiting one 
 
@@ -53,3 +63,4 @@ namespace ExcelReadActivity
         }
     }
 }
+// C:\Users\hasan\Desktop\excel applications try\deneme.xlsx\
