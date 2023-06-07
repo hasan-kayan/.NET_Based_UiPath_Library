@@ -16,7 +16,7 @@ namespace ExcelRead_Range_Cell
             Console.WriteLine("Please Enter The File Path:");
             string filePath = Console.ReadLine();
 
-            Console.WriteLine("1)- Single Data , 2)- Data set"); ;
+            Console.WriteLine("1)- Cell Reading , 2)- Range Reading"); ;
 
             int caseData = Int32.Parse(Console.ReadLine());
             ;
@@ -24,15 +24,14 @@ namespace ExcelRead_Range_Cell
             switch (caseData)
             {
                 case 1:
-                    Console.WriteLine("Please Enter Data and Cell You want to write:");
-                    string cellData = Console.ReadLine();
+                    Console.WriteLine("Please Enter Data and Cell You want to read:");
                     string cellID = Console.ReadLine();
+                    
 
                     break;
 
                case 2:
-                    Console.WriteLine("Please enter the Data set and range of data you want to enter:");
-                    string cellData2 = Console.ReadLine();
+                    Console.WriteLine("Please enter range you want to read:");
                     string range = Console.ReadLine();
                     break;
 
