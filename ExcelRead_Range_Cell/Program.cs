@@ -52,3 +52,5 @@ namespace ExcelReadApp
         }
     }
 }
+
+// C:\Users\hasan\Desktop\excel applications try\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx
