@@ -11,11 +11,12 @@ namespace ExcelReadApp
     {
         static void Main(string[] args)
         {
+            // activities can be opened ins VS
 
             Console.WriteLine("Enter the path to the Excel file:");
             string filePath = Console.ReadLine();
 
-            Console.WriteLine("Enter the range to read (e.g., A1:B5):");
+            Console.WriteLine("Enter the range to read (e.g., A1:B5):"); // Range girilmezse 
             string range = Console.ReadLine();
 
             Console.WriteLine("Please enter the worksheet name you want to work on:");
@@ -23,11 +24,11 @@ namespace ExcelReadApp
             
 
             Application app = new Application();
-            app.Visible = true;
+            app.Visible = false;
 
             Workbook existingWorkbook = app.Workbooks.Open(filePath); // Open file to read
             Worksheet worksheet = existingWorkbook.Worksheets[worksheetName]; // Declare Worksheet
-
+            
 
 
             try // For possibel mistakes, try-catch 

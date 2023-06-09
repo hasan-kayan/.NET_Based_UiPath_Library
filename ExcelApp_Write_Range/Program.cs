@@ -22,20 +22,19 @@ namespace ExcelApp_Write_Range
             Console.WriteLine("Please enter the worksheet name you want to work on:");
             string worksheetName = Console.ReadLine();
 
-            Console.Write("Enter the values separated by commas: "); // Take input data from user 
+            Console.Write("Enter the values separated by |: "); // Take input data from user 
             string input = Console.ReadLine();
 
-            string[] Data = input.Split(','); // One line string will be seperated
+            string[] Data = input.Split('|'); // One line string will be seperated | bunula ayır 
 
             Application app = new Application();
-            app.Visible = true;
+            app.Visible = false; // Excel dont open 
 
             Workbook existingWorkbook = app.Workbooks.Open(filePath); // Open file to read
             Worksheet worksheet = existingWorkbook.Worksheets[worksheetName];
 
             
 
-            double[] SalesDate = { 4.3, 4, 21, 324, 17 };
 
             for (int i = 0; i < Data.Length; i++)
             {
