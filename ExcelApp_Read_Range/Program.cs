@@ -16,36 +16,41 @@ namespace ExcelReadApp
             Console.WriteLine("Enter the path to the Excel file:");
             string filePath = Console.ReadLine();
 
-            Console.WriteLine("Enter the range to read (e.g., A1:B5):"); // Range girilmezse 
+            Console.WriteLine("Enter the range to read (e.g., A1:B5):");
             string range = Console.ReadLine();
 
             Console.WriteLine("Please enter the worksheet name you want to work on:");
             string worksheetName = Console.ReadLine();
-            
 
             Application app = new Application();
             app.Visible = false;
 
             Workbook existingWorkbook = app.Workbooks.Open(filePath); // Open file to read
             Worksheet worksheet = existingWorkbook.Worksheets[worksheetName]; // Declare Worksheet
-            
 
-
-            try // For possibel mistakes, try-catch 
+            try
             {
-                Range excelRange = worksheet.Range[range]; // Range structre is embedded into lib 
-                object[,] values = excelRange.Value; // Object arry to keep readed values 
+                Range excelRange;
+                if (string.IsNullOrEmpty(range))
+                {
+                    excelRange = worksheet.UsedRange;
+                }
+                else
+                {
+                    excelRange = worksheet.Range[range];
+                }
 
-                // etrieves the number of rows and columns 
+                object[,] values = excelRange.Value;
+
                 int rowCount = values.GetLength(0);
                 int columnCount = values.GetLength(1);
 
                 Console.WriteLine($"Reading range: {range}");
                 Console.WriteLine();
 
-                for (int row = 1; row <= rowCount; row++) //  row count and loop
+                for (int row = 1; row <= rowCount; row++)
                 {
-                    for (int column = 1; column <= columnCount; column++) // column count loop 
+                    for (int column = 1; column <= columnCount; column++)
                     {
                         object value = values[row, column];
                         Console.Write(value + "\t");
@@ -53,7 +58,7 @@ namespace ExcelReadApp
                     Console.WriteLine();
                 }
             }
-            catch (Exception ex) // Possible error catch 
+            catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
@@ -67,7 +72,3 @@ namespace ExcelReadApp
         }
     }
 }
-
-// C:\Users\hasan\Desktop\excel applications try\deneme.xlsx
-// BIG DATA //
-// C:\Users\hasan\Desktop\excel applications try\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx
