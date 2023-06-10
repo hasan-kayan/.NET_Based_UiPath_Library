@@ -4,6 +4,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using Application = Microsoft.Office.Interop.Excel.Application;
+using System.Text;
 
 namespace ExcelReadApp
 {
@@ -11,6 +12,10 @@ namespace ExcelReadApp
     {
         static void Main(string[] args)
         {
+
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8; 
+
             // activities can be opened ins VS
 
             Console.WriteLine("Enter the path to the Excel file:");
