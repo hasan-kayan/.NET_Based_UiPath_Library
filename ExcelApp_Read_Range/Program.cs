@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Security.AccessControl;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,6 +16,15 @@ namespace ExcelReadApp
 
             Console.WriteLine("Enter the path to the Excel file:");
             string filePath = Console.ReadLine();
+
+            // Check file permissions
+            bool hasReadAccess = CheckFilePermissions(filePath, FileSystemRights.Read);
+            if (!hasReadAccess)
+            {
+                Console.WriteLine("Insufficient permissions to read the file.");
+                Console.ReadLine();
+                return;
+            }
 
             Console.WriteLine("Enter the range to read (e.g., A1:B5):");
             string range = Console.ReadLine();
@@ -95,6 +106,36 @@ namespace ExcelReadApp
 
             Console.ReadLine();
         }
+
+        static bool CheckFilePermissions(string filePath, FileSystemRights requiredPermissions)
+        {
+            try
+            {
+                FileSecurity fileSecurity = File.GetAccessControl(filePath);
+                AuthorizationRuleCollection accessRules = fileSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
+
+                foreach (FileSystemAccessRule rule in accessRules)
+                {
+                    if (rule.FileSystemRights.HasFlag(requiredPermissions))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+            return false;
+        }
     }
 }
-
