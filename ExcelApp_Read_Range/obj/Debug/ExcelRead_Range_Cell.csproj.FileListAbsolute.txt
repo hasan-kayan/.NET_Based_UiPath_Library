@@ -14,3 +14,6 @@ C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelApp_Read_Range\obj\Debug\E
 C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelApp_Read_Range\obj\Debug\ExcelRead_Range_Cell.csproj.CoreCompileInputs.cache
 C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelApp_Read_Range\obj\Debug\ExcelRead_Range_Cell.exe
 C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelApp_Read_Range\obj\Debug\ExcelRead_Range_Cell.pdb
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelApp_Read_Range\bin\Debug\DocumentFormat.OpenXml.dll
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelApp_Read_Range\bin\Debug\DocumentFormat.OpenXml.xml
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelApp_Read_Range\obj\Debug\ExcelRead_Range_Cell.csproj.CopyComplete
