@@ -1,8 +1,9 @@
 ﻿using System;
-using System.IO;
-using System.Security.AccessControl;
+using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using Application = Microsoft.Office.Interop.Excel.Application;
 using System.Text;
 
 namespace ExcelReadApp
@@ -11,20 +12,13 @@ namespace ExcelReadApp
     {
         static void Main(string[] args)
         {
-            // Set the console output encoding to UTF-8
             Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8;
 
             Console.WriteLine("Enter the path to the Excel file:");
             string filePath = Console.ReadLine();
 
-            // Check file permissions
-            bool hasReadAccess = CheckFilePermissions(filePath, FileSystemRights.Read);
-            if (!hasReadAccess)
-            {
-                Console.WriteLine("Insufficient permissions to read the file.");
-                Console.ReadLine();
-                return;
-            }
+            filePath = Encoding.Default.GetString(Encoding.UTF8.GetBytes(filePath));
 
             Console.WriteLine("Enter the range to read (e.g., A1:B5):");
             string range = Console.ReadLine();
@@ -35,28 +29,12 @@ namespace ExcelReadApp
             Application app = new Application();
             app.Visible = false;
 
-            Workbook existingWorkbook = null;
-            Worksheet worksheet = null;
+            Workbook existingWorkbook = app.Workbooks.Open(filePath);
+            Worksheet worksheet = existingWorkbook.Worksheets[worksheetName];
 
             try
             {
-                // Convert the file path string to UTF-8 encoding
-                byte[] filePathBytes = Encoding.UTF8.GetBytes(filePath);
-                string encodedFilePath = Encoding.UTF8.GetString(filePathBytes);
-
-                existingWorkbook = app.Workbooks.Open(encodedFilePath); // Open file to read
-                worksheet = existingWorkbook.Worksheets[worksheetName]; // Declare Worksheet
-
-                Range excelRange;
-                if (string.IsNullOrEmpty(range))
-                {
-                    excelRange = worksheet.UsedRange;
-                }
-                else
-                {
-                    excelRange = worksheet.Range[range];
-                }
-
+                Range excelRange = worksheet.Range[range];
                 object[,] values = excelRange.Value;
 
                 int rowCount = values.GetLength(0);
@@ -81,61 +59,11 @@ namespace ExcelReadApp
             }
             finally
             {
-                if (worksheet != null)
-                {
-                    Marshal.ReleaseComObject(worksheet);
-                }
-                if (existingWorkbook != null)
-                {
-                    existingWorkbook.Close();
-                    Marshal.ReleaseComObject(existingWorkbook);
-                }
-                if (app != null)
-                {
-                    app.Quit();
-                    Marshal.ReleaseComObject(app);
-                }
-
-                worksheet = null;
-                existingWorkbook = null;
-                app = null;
-
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                existingWorkbook.Close();
+                app.Quit();
             }
 
             Console.ReadLine();
-        }
-
-        static bool CheckFilePermissions(string filePath, FileSystemRights requiredPermissions)
-        {
-            try
-            {
-                FileSecurity fileSecurity = File.GetAccessControl(filePath);
-                AuthorizationRuleCollection accessRules = fileSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
-
-                foreach (FileSystemAccessRule rule in accessRules)
-                {
-                    if (rule.FileSystemRights.HasFlag(requiredPermissions))
-                    {
-                        return true;
-                    }
-                }
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return false;
-            }
-            catch (FileNotFoundException)
-            {
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-
-            return false;
         }
     }
 }
