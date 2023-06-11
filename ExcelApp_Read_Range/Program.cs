@@ -4,6 +4,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using Application = Microsoft.Office.Interop.Excel.Application;
+using System.IO; 
 
 namespace ExcelReadApp
 {
