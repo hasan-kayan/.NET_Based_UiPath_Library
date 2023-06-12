@@ -1,0 +1,8 @@
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\FileActivete\bin\Debug\FileActivete.exe.config
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\FileActivete\bin\Debug\FileActivete.exe
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\FileActivete\bin\Debug\FileActivete.pdb
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\FileActivete\obj\Debug\FileActivete.csproj.AssemblyReference.cache
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\FileActivete\obj\Debug\FileActivete.csproj.SuggestedBindingRedirects.cache
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\FileActivete\obj\Debug\FileActivete.csproj.CoreCompileInputs.cache
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\FileActivete\obj\Debug\FileActivete.exe
+C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\FileActivete\obj\Debug\FileActivete.pdb

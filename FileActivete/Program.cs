@@ -21,10 +21,10 @@ namespace TurkishExcelReader
             string worksheetName = Console.ReadLine();
 
             // Create an Excel application object
-            Application excelApp = null;
+            Microsoft.Office.Interop.Excel.Application excelApp = null;
             try
             {
-                excelApp = new Application();
+                excelApp = new Microsoft.Office.Interop.Excel.Application();
             }
             catch (COMException)
             {
