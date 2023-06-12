@@ -23,9 +23,6 @@ namespace TurkishExcelReader
             string filePath = "C:\\Users\\hasan\\Desktop\\İşBankasıDeneme.xlsx";
 
 
-            // Prompt the user to enter the reading range
-            Console.WriteLine("Enter the range to read (e.g., A1:B5):");
-            string range = Console.ReadLine();
 
             // Create an Excel application object
             Application excelApp = null;
@@ -38,6 +35,9 @@ namespace TurkishExcelReader
                 Console.WriteLine("Failed to create Excel application.");
                 return;
             }
+
+            Console.WriteLine("Excel Application Created");
+
 
             // Open the workbook
             Workbook workbook = null;
@@ -52,6 +52,8 @@ namespace TurkishExcelReader
                 Marshal.ReleaseComObject(excelApp);
                 return;
             }
+            Console.WriteLine("Opened Workbook");
+
 
             // Get the worksheet by name
             Worksheet worksheet = null;
@@ -62,42 +64,14 @@ namespace TurkishExcelReader
             catch (COMException)
             {
                 Console.WriteLine("Failed to find the worksheet.");
-                workbook.Close();
-                excelApp.Quit();
+                
                 Marshal.ReleaseComObject(worksheet);
                 Marshal.ReleaseComObject(workbook);
                 Marshal.ReleaseComObject(excelApp);
                 return;
             }
 
-            // Read the data from the specified range
-            Range excelRange = worksheet.Range[range];
-            object[,] data = excelRange.Value;
-
-            // Display the data in the console
-            int rowCount = data.GetLength(0);
-            int columnCount = data.GetLength(1);
-
-            for (int row = 1; row <= rowCount; row++)
-            {
-                for (int col = 1; col <= columnCount; col++)
-                {
-                    object cellValue = data[row, col];
-                    Console.Write(cellValue + "\t");
-                }
-                Console.WriteLine();
-            }
-
-            // Clean up Excel objects
-            Marshal.ReleaseComObject(excelRange);
-            Marshal.ReleaseComObject(worksheet);
-            workbook.Close();
-            Marshal.ReleaseComObject(workbook);
-            excelApp.Quit();
-            Marshal.ReleaseComObject(excelApp);
-
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
+         
         }
     }
 }
