@@ -15,12 +15,10 @@ namespace TurkishExcelReader
             // Console.WriteLine("Enter the file path of the Excel file:");
             // string filePath = Console.ReadLine();
 
-            // Prompt the user to enter the worksheet name
-            //Console.WriteLine("Enter the name of the worksheet:");
-            //string worksheetName = Console.ReadLine();
 
-            string worksheetName = "Sayfa1";
-            string filePath = "C:\\Users\\hasan\\Desktop\\İşBankasıDeneme.xlsx";
+            string filePath = @"C:\Users\hasan\Desktop\İşBankasıDeneme.xlsx";
+
+
 
 
 
@@ -36,9 +34,6 @@ namespace TurkishExcelReader
                 return;
             }
 
-            Console.WriteLine("Excel Application Created");
-
-
             // Open the workbook
             Workbook workbook = null;
             try
@@ -52,26 +47,16 @@ namespace TurkishExcelReader
                 Marshal.ReleaseComObject(excelApp);
                 return;
             }
-            Console.WriteLine("Opened Workbook");
 
+            Console.WriteLine("Excel file opened successfully.");
 
-            // Get the worksheet by name
-            Worksheet worksheet = null;
-            try
-            {
-                worksheet = (Worksheet)workbook.Sheets[worksheetName];
-            }
-            catch (COMException)
-            {
-                Console.WriteLine("Failed to find the worksheet.");
-                
-                Marshal.ReleaseComObject(worksheet);
-                Marshal.ReleaseComObject(workbook);
-                Marshal.ReleaseComObject(excelApp);
-                return;
-            }
+            // Clean up Excel objects
+            excelApp.Visible = true;
+            Marshal.ReleaseComObject(workbook);
+            Marshal.ReleaseComObject(excelApp);
 
-         
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadKey();
         }
     }
 }
