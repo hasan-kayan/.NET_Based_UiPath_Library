@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TurkishExcelReader
 {
@@ -13,18 +12,26 @@ namespace TurkishExcelReader
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("tr-TR");
 
             // Prompt the user to enter the file path
-            Console.WriteLine("Enter the file path of the Excel file:");
-            string filePath = Console.ReadLine();
+            // Console.WriteLine("Enter the file path of the Excel file:");
+            // string filePath = Console.ReadLine();
 
             // Prompt the user to enter the worksheet name
-            Console.WriteLine("Enter the name of the worksheet:");
-            string worksheetName = Console.ReadLine();
+            //Console.WriteLine("Enter the name of the worksheet:");
+            //string worksheetName = Console.ReadLine();
+
+            string worksheetName = "Sayfa1";
+            string filePath = "C:\\Users\\hasan\\Desktop\\İşBankasıDeneme.xlsx";
+
+
+            // Prompt the user to enter the reading range
+            Console.WriteLine("Enter the range to read (e.g., A1:B5):");
+            string range = Console.ReadLine();
 
             // Create an Excel application object
-            Microsoft.Office.Interop.Excel.Application excelApp = null;
+            Application excelApp = null;
             try
             {
-                excelApp = new Microsoft.Office.Interop.Excel.Application();
+                excelApp = new Application();
             }
             catch (COMException)
             {
@@ -63,9 +70,9 @@ namespace TurkishExcelReader
                 return;
             }
 
-            // Read the data from the worksheet
-            Range usedRange = worksheet.UsedRange;
-            object[,] data = usedRange.Value;
+            // Read the data from the specified range
+            Range excelRange = worksheet.Range[range];
+            object[,] data = excelRange.Value;
 
             // Display the data in the console
             int rowCount = data.GetLength(0);
@@ -82,7 +89,7 @@ namespace TurkishExcelReader
             }
 
             // Clean up Excel objects
-            Marshal.ReleaseComObject(usedRange);
+            Marshal.ReleaseComObject(excelRange);
             Marshal.ReleaseComObject(worksheet);
             workbook.Close();
             Marshal.ReleaseComObject(workbook);
@@ -94,4 +101,3 @@ namespace TurkishExcelReader
         }
     }
 }
-
