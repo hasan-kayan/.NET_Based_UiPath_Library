@@ -25,6 +25,9 @@ namespace ExcelDataReader
                 return;
             }
 
+            Console.WriteLine("Excel Detected");
+
+
             // Get the active workbook
             Workbook workbook = excelApp.ActiveWorkbook;
             if (workbook == null)
@@ -32,6 +35,7 @@ namespace ExcelDataReader
                 Console.WriteLine("No open workbook found.");
                 return;
             }
+            Console.WriteLine("Workbook Detected");
 
             // Get the active worksheet
             Worksheet worksheet = workbook.ActiveSheet;
