@@ -1,8 +1,0 @@
-C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelRead_Differetn_OpenXML SDK\bin\Debug\ExcelRead_Differetn_OpenXML SDK.exe.config
-C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelRead_Differetn_OpenXML SDK\bin\Debug\ExcelRead_Differetn_OpenXML SDK.exe
-C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelRead_Differetn_OpenXML SDK\bin\Debug\ExcelRead_Differetn_OpenXML SDK.pdb
-C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelRead_Differetn_OpenXML SDK\obj\Debug\ExcelRead_Differetn_OpenXML SDK.csproj.AssemblyReference.cache
-C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelRead_Differetn_OpenXML SDK\obj\Debug\ExcelRead_Differetn_OpenXML SDK.csproj.SuggestedBindingRedirects.cache
-C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelRead_Differetn_OpenXML SDK\obj\Debug\ExcelRead_Differetn_OpenXML SDK.csproj.CoreCompileInputs.cache
-C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelRead_Differetn_OpenXML SDK\obj\Debug\ExcelRead_Differetn_OpenXML SDK.exe
-C:\Users\hasan\Desktop\.NET_Based_UiPath_Library\ExcelRead_Differetn_OpenXML SDK\obj\Debug\ExcelRead_Differetn_OpenXML SDK.pdb
