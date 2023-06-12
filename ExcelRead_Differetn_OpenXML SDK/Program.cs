@@ -14,10 +14,10 @@ namespace ExcelDataReader
             string range = Console.ReadLine();
 
             // Create an Excel application object
-            Application excelApp = null;
+            Microsoft.Office.Interop.Excel.Application excelApp = null;
             try
             {
-                excelApp = (Application)Marshal.GetActiveObject("Excel.Application");
+                excelApp = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject("Excel.Application");
             }
             catch (COMException)
             {
