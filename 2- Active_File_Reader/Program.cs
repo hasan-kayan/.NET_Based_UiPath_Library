@@ -42,6 +42,20 @@ namespace ExcelDataReader
 
             // Read the data from the specified range
             Range excelRange = worksheet.Range[range];
+            
+
+            if (range == string.Empty)
+            {
+                excelRange = worksheet.UsedRange;
+                Console.WriteLine("All data in" + worksheet.Name + "sheet will be reading");
+
+            }
+            else
+            {
+                excelRange = worksheet.Range[range];
+                Console.WriteLine("Data in ' " + range + " ' range will be reading");
+
+            }
             object[,] data = excelRange.Value;
 
             // Display the data in the console
@@ -57,7 +71,7 @@ namespace ExcelDataReader
                 }
                 Console.WriteLine();
             }
-
+            
             // Clean up Excel objects
             Marshal.ReleaseComObject(excelRange);
             Marshal.ReleaseComObject(worksheet);
