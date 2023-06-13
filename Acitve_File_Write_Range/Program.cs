@@ -2,36 +2,26 @@
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 
-namespace ExcelDataWriter
+namespace ExcelDataReader
 {
     class Program
     {
         static void Main(string[] args)
         {
-            // Set Turkish culture for proper character handling
-            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("tr-TR");
-
-            // Prompt the user to enter the worksheet name
-            Console.WriteLine("Enter the name of the worksheet:");
-            string worksheetName = Console.ReadLine();
-
-            // Prompt the user to enter the column name where the data will be written
-            Console.WriteLine("Enter the column name (e.g., A) where the data will be written:");
+            Console.WriteLine("Enter the column name you want to add the data:");
             string columnName = Console.ReadLine();
 
-            // Prompt the user to enter the data to be written
-            Console.WriteLine("Enter the data to be written, separete data by comma '|':");
-            String data = Console.ReadLine();
+            Console.WriteLine("Enter data you want to add, separated by '|':");
+            string input = Console.ReadLine();
 
-            string[] Data = data.Split('|'); // One line string will be seperated | bunula ayır 
-
-
+            string[] data = input.Split('|');
+            Console.WriteLine(data);
 
             // Create an Excel application object
-            Microsoft.Office.Interop.Excel.Application excelApp = null;
+            Application excelApp = null;
             try
             {
-                excelApp = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject("Excel.Application");
+                excelApp = (Application)Marshal.GetActiveObject("Excel.Application");
             }
             catch (COMException)
             {
@@ -39,21 +29,39 @@ namespace ExcelDataWriter
                 return;
             }
 
-            Console.WriteLine("Excel Detected");
-
+            Console.WriteLine("Excel detected.");
 
             // Get the active workbook
-            Workbook workbook = excelApp.ActiveWorkbook;
-            if (workbook == null)
+            Workbook workbook = null;
+            try
+            {
+                workbook = excelApp.ActiveWorkbook;
+            }
+            catch (COMException)
             {
                 Console.WriteLine("No open workbook found.");
+                Marshal.ReleaseComObject(excelApp);
                 return;
             }
-            Console.WriteLine("Workbook Detected");
+
+            Console.WriteLine("Workbook detected.");
+
+            Console.WriteLine(workbook.Name);
+
+
 
             // Get the active worksheet
             Worksheet worksheet = workbook.ActiveSheet;
 
+            for (int i = 0; i < data.Length; i++)
+            {
+                worksheet.Range[columnName + (2 + i)].Value = data[i];
+            }
+
+            workbook.Save();
+
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadKey();
         }
     }
 }
