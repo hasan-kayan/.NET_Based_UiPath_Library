@@ -9,7 +9,9 @@ namespace ExcelDataReader
     {
         static void Main(string[] args)
         {
-           
+            // Prompt the user to enter the range to read from Excel
+            Console.WriteLine("Enter the range to read (e.g., A1:B5):");
+            string range = Console.ReadLine();
 
             // Create an Excel application object
             Microsoft.Office.Interop.Excel.Application excelApp = null;
@@ -38,16 +40,8 @@ namespace ExcelDataReader
             // Get the active worksheet
             Worksheet worksheet = workbook.ActiveSheet;
 
-            // Prompt the user to enter the range to read from Excel
-            Console.WriteLine("Enter the range to read (e.g., A1:B5):");
-            string range = Console.ReadLine();
-
             // Read the data from the specified range
             Range excelRange = worksheet.Range[range];
-
-
-
-
             object[,] data = excelRange.Value;
 
             // Display the data in the console
@@ -59,11 +53,11 @@ namespace ExcelDataReader
                 for (int col = 1; col <= columnCount; col++)
                 {
                     object cellValue = data[row, col];
-                    Console.WriteLine(cellValue + "\t");
+                    Console.Write(cellValue + "\t");
                 }
                 Console.WriteLine();
             }
-            
+
             // Clean up Excel objects
             Marshal.ReleaseComObject(excelRange);
             Marshal.ReleaseComObject(worksheet);
