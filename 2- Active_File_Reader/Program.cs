@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
-using System.IO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ExcelDataReader
 {
@@ -9,6 +9,8 @@ namespace ExcelDataReader
     {
         static void Main(string[] args)
         {
+           
+
             // Create an Excel application object
             Microsoft.Office.Interop.Excel.Application excelApp = null;
             try
@@ -23,6 +25,7 @@ namespace ExcelDataReader
 
             Console.WriteLine("Excel Detected");
 
+
             // Get the active workbook
             Workbook workbook = excelApp.ActiveWorkbook;
             if (workbook == null)
@@ -31,11 +34,9 @@ namespace ExcelDataReader
                 return;
             }
             Console.WriteLine("Workbook Detected");
-            Console.WriteLine(workbook.Name);
 
             // Get the active worksheet
             Worksheet worksheet = workbook.ActiveSheet;
-            Console.WriteLine("Worksheet Detected '" + worksheet.Name + "'");
 
             // Prompt the user to enter the range to read from Excel
             Console.WriteLine("Enter the range to read (e.g., A1:B5):");
@@ -43,6 +44,10 @@ namespace ExcelDataReader
 
             // Read the data from the specified range
             Range excelRange = worksheet.Range[range];
+
+
+
+
             object[,] data = excelRange.Value;
 
             // Display the data in the console
@@ -54,28 +59,11 @@ namespace ExcelDataReader
                 for (int col = 1; col <= columnCount; col++)
                 {
                     object cellValue = data[row, col];
-                    Console.Write(cellValue + "\t");
+                    Console.WriteLine(cellValue + "\t");
                 }
                 Console.WriteLine();
             }
-
-            // Write the data array into a file
-            string filePath = "output.txt";
-            using (StreamWriter writer = File.CreateText(filePath))
-            {
-                for (int row = 1; row <= rowCount; row++)
-                {
-                    for (int col = 1; col <= columnCount; col++)
-                    {
-                        object cellValue = data[row, col];
-                        writer.Write(cellValue + "\t");
-                    }
-                    writer.WriteLine();
-                }
-            }
-
-            Console.WriteLine("Data array written to file: " + filePath);
-
+            
             // Clean up Excel objects
             Marshal.ReleaseComObject(excelRange);
             Marshal.ReleaseComObject(worksheet);
