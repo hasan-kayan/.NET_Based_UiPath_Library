@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ExcelDataReader
 {
@@ -9,34 +8,34 @@ namespace ExcelDataReader
     {
         static void Main(string[] args)
         {
-           
+            // Prompt the user to enter the Excel file path
+            Console.WriteLine("Enter the Excel file path:");
+            string filePath = Console.ReadLine();
 
             // Create an Excel application object
             Microsoft.Office.Interop.Excel.Application excelApp = null;
             try
             {
-                excelApp = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject("Excel.Application");
+                excelApp = new Microsoft.Office.Interop.Excel.Application();
             }
             catch (COMException)
-            {   
-                Console.WriteLine("No active Excel instance found.");
+            {
+                Console.WriteLine("Failed to create Excel application object.");
                 return;
             }
 
-            Console.WriteLine("Excel Detected");
-
-
-            // Get the active workbook
-            Workbook workbook = excelApp.ActiveWorkbook;
+            // Open the workbook
+            Workbook workbook = excelApp.Workbooks.Open(filePath);
             if (workbook == null)
             {
-                Console.WriteLine("No open workbook found.");
+                Console.WriteLine("Failed to open the workbook.");
+                excelApp.Quit();
+                Marshal.ReleaseComObject(excelApp);
                 return;
             }
-            Console.WriteLine("Workbook Detected");
 
-            // Get the active worksheet
-            Worksheet worksheet = workbook.ActiveSheet;
+            // Get the first worksheet in the workbook
+            Worksheet worksheet = workbook.Sheets[1];
 
             // Prompt the user to enter the range to read from Excel
             Console.WriteLine("Enter the range to read (e.g., A1:B5):");
@@ -44,19 +43,6 @@ namespace ExcelDataReader
 
             // Read the data from the specified range
             Range excelRange = worksheet.Range[range];
-
-
-            // Copy the values from source worksheet to new worksheet
-            // Data copied in a new worksheet 
-            Worksheet newWorksheet = workbook.Sheets.Add(Type.Missing, workbook.Sheets[workbook.Sheets.Count], Type.Missing, Type.Missing) as Worksheet;
-            worksheet.UsedRange.Copy(newWorksheet.Cells[1, 1]);
-            newWorksheet.PasteSpecial(XlPasteType.xlPasteValues, XlPasteSpecialOperation.xlPasteSpecialOperationNone);
-
-
-
-
-
-
             object[,] data = excelRange.Value;
 
             // Display the data in the console
@@ -68,12 +54,14 @@ namespace ExcelDataReader
                 for (int col = 1; col <= columnCount; col++)
                 {
                     object cellValue = data[row, col];
-                    Console.WriteLine(cellValue + "\t");
+                    Console.Write(cellValue + "\t");
                 }
-                Console.WriteLine(); 
+                Console.WriteLine();
             }
-            
+
             // Clean up Excel objects
+            workbook.Close();
+            excelApp.Quit();
             Marshal.ReleaseComObject(excelRange);
             Marshal.ReleaseComObject(worksheet);
             Marshal.ReleaseComObject(workbook);
