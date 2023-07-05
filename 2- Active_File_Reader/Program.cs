@@ -1,74 +1,121 @@
 ﻿using System;
+using System.Data;
+using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 
-namespace ExcelDataReader
+namespace ExcelHelper
 {
-    class Program
+    public class ExcelOperations
     {
-        static void Main(string[] args)
+        public DataTable CopyAndReadWorksheet(string filePath, string sourceSheetName)
         {
-            // Prompt the user to enter the Excel file path
-            Console.WriteLine("Enter the Excel file path:");
-            string filePath = Console.ReadLine();
-
             // Create an Excel application object
-            Microsoft.Office.Interop.Excel.Application excelApp = null;
+            Application excelApp = null;
+            Workbook workbook = null;
+
             try
             {
-                excelApp = new Microsoft.Office.Interop.Excel.Application();
+                excelApp = (Application)Marshal.GetActiveObject("Excel.Application");
+                workbook = excelApp.Workbooks[Path.GetFileName(filePath)];
             }
-            catch (COMException)
+            catch (Exception)
             {
-                Console.WriteLine("Failed to create Excel application object.");
-                return;
+                excelApp = new Application();
+                workbook = excelApp.Workbooks.Open(filePath);
             }
 
-            // Open the workbook
-            Workbook workbook = excelApp.Workbooks.Open(filePath);
             if (workbook == null)
             {
-                Console.WriteLine("Failed to open the workbook.");
                 excelApp.Quit();
-                Marshal.ReleaseComObject(excelApp);
-                return;
+                throw new Exception("Failed to open the workbook.");
             }
 
-            // Get the first worksheet in the workbook
-            Worksheet worksheet = workbook.Sheets[1];
-
-            // Prompt the user to enter the range to read from Excel
-            Console.WriteLine("Enter the range to read (e.g., A1:B5):");
-            string range = Console.ReadLine();
-
-            // Read the data from the specified range
-            Range excelRange = worksheet.Range[range];
-            object[,] data = excelRange.Value;
-
-            // Display the data in the console
-            int rowCount = data.GetLength(0);
-            int columnCount = data.GetLength(1);
-
-            for (int row = 1; row <= rowCount; row++)
+            // Get the source worksheet
+            Worksheet sourceWorksheet = null;
+            foreach (Worksheet worksheet in workbook.Sheets)
             {
+                if (worksheet.Name == sourceSheetName)
+                {
+                    sourceWorksheet = worksheet;
+                    break;
+                }
+            }
+            if (sourceWorksheet == null)
+            {
+                workbook.Close();
+                excelApp.Quit();
+                throw new Exception($"Worksheet '{sourceSheetName}' not found.");
+            }
+
+            // Get the used range in the source worksheet
+            Range usedRange = sourceWorksheet.UsedRange;
+
+            // Create a new worksheet
+            Worksheet newWorksheet = workbook.Sheets.Add(Type.Missing, workbook.Sheets[workbook.Sheets.Count], Type.Missing, Type.Missing);
+
+            // Copy the used range from source worksheet to new worksheet
+            usedRange.Copy(newWorksheet.Cells[1, 1]);
+
+            // Paste values only in the new worksheet
+            newWorksheet.PasteSpecial(XlPasteType.xlPasteValues, XlPasteSpecialOperation.xlPasteSpecialOperationNone);
+
+            // Get the data from the new worksheet
+            Range newWorksheetUsedRange = newWorksheet.UsedRange;
+            object[,] excelData = (object[,])newWorksheetUsedRange.Value;
+
+            // Convert the data to a DataTable
+            DataTable dataTable = new DataTable();
+            int rowCount = excelData.GetLength(0);
+            int columnCount = excelData.GetLength(1);
+
+            // Add columns to the DataTable
+            for (int col = 1; col <= columnCount; col++)
+            {
+                string columnName = excelData[1, col]?.ToString() ?? $"Column{col}";
+                dataTable.Columns.Add(columnName);
+            }
+
+            // Add rows to the DataTable
+            for (int row = 2; row <= rowCount; row++)
+            {
+                DataRow dataRow = dataTable.NewRow();
                 for (int col = 1; col <= columnCount; col++)
                 {
-                    object cellValue = data[row, col];
-                    Console.Write(cellValue + "\t");
+                    dataRow[col - 1] = excelData[row, col];
                 }
-                Console.WriteLine();
+                dataTable.Rows.Add(dataRow);
             }
 
-            // Clean up Excel objects
+            // Close the workbook and release Excel objects
             workbook.Close();
             excelApp.Quit();
-            Marshal.ReleaseComObject(excelRange);
-            Marshal.ReleaseComObject(worksheet);
-            Marshal.ReleaseComObject(workbook);
-            Marshal.ReleaseComObject(excelApp);
+            ReleaseObject(newWorksheetUsedRange);
+            ReleaseObject(newWorksheet);
+            ReleaseObject(usedRange);
+            ReleaseObject(sourceWorksheet);
+            ReleaseObject(workbook);
+            ReleaseObject(excelApp);
 
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
+            return dataTable;
+        }
+
+        private void ReleaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch (Exception ex)
+            {
+                obj = null;
+                throw ex;
+            }
+            finally
+            {
+                GC.Collect();
+            }
         }
     }
 }
