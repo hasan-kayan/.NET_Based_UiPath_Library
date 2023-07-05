@@ -9,7 +9,7 @@ class Program
     {
         string excelFilePath = @"C:\Users\hasan\Desktop\Büyük Excel\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx";
         string sheetName = "TC Hazine ve Maliye Bakanlığı y";
-        string range = "A1:C10"; // Örnek aralık
+        string range = "B4:Q247444"; // Örnek aralık
 
         try
         {
