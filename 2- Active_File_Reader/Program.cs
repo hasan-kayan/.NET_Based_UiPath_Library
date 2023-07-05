@@ -1,122 +1,95 @@
 ﻿using System;
 using System.Data;
-using System.IO;
-using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 using DataTable = System.Data.DataTable;
 
-namespace ExcelHelper
+class Program
 {
-    public class ExcelOperations
+    static void Main()
     {
-        public DataTable CopyAndReadWorksheet(string filePath, string sourceSheetName)
+        string excelFilePath = @"C:\Users\hasan\Desktop\Büyük Excel\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx";
+        string sheetName = "TC Hazine ve Maliye Bakanlığı y";
+        string range = "A1:C10"; // Örnek aralık
+
+        try
         {
-            // Create an Excel application object
-            Application excelApp = null;
-            Workbook workbook = null;
+            Console.WriteLine("Opening the Excel file...");
+            Application excelApp = new Application();
+            Workbook workbook = excelApp.Workbooks.Open(excelFilePath);
+            Worksheet worksheet = workbook.Sheets[sheetName];
 
-            try
+            if (worksheet != null)
             {
-                excelApp = (Application)Marshal.GetActiveObject("Excel.Application");
-                workbook = excelApp.Workbooks[Path.GetFileName(filePath)];
-            }
-            catch (Exception)
-            {
-                excelApp = new Application();
-                workbook = excelApp.Workbooks.Open(filePath);
-            }
+                Console.WriteLine("Sheet found. Retrieving cell values...");
+                Range cells = worksheet.Range[range];
+                object[,] cellValues = (object[,])cells.Value;
 
-            if (workbook == null)
-            {
-                excelApp.Quit();
-                throw new Exception("Failed to open the workbook.");
-            }
-
-            // Get the source worksheet
-            Worksheet sourceWorksheet = null;
-            foreach (Worksheet worksheet in workbook.Sheets)
-            {
-                if (worksheet.Name == sourceSheetName)
+                if (cellValues != null)
                 {
-                    sourceWorksheet = worksheet;
-                    break;
+                    int rowCount = cellValues.GetLength(0);
+                    int columnCount = cellValues.GetLength(1);
+
+                    DataTable dataTable = new DataTable();
+
+                    // Add columns to the DataTable
+                    for (int col = 1; col <= columnCount; col++)
+                    {
+                        dataTable.Columns.Add($"Column{col}");
+                    }
+
+                    // Add cell values to the DataTable
+                    for (int row = 1; row <= rowCount; row++)
+                    {
+                        DataRow dataRow = dataTable.NewRow();
+
+                        for (int col = 1; col <= columnCount; col++)
+                        {
+                            object cellValue = cellValues[row, col];
+                            dataRow[col - 1] = cellValue;
+                        }
+
+                        dataTable.Rows.Add(dataRow);
+                    }
+
+                    Console.WriteLine("Cell values retrieved. DataTable output:");
+                    PrintDataTable(dataTable);
+                }
+                else
+                {
+                    Console.WriteLine("No cell values found in the specified range.");
                 }
             }
-            if (sourceWorksheet == null)
+            else
             {
-                workbook.Close();
-                excelApp.Quit();
-                throw new Exception($"Worksheet '{sourceSheetName}' not found.");
+                Console.WriteLine("Specified sheet name not found.");
             }
 
-            // Get the used range in the source worksheet
-            Range usedRange = sourceWorksheet.UsedRange;
-
-            // Create a new worksheet
-            Worksheet newWorksheet = workbook.Sheets.Add(Type.Missing, workbook.Sheets[workbook.Sheets.Count], Type.Missing, Type.Missing);
-
-            // Copy the used range from source worksheet to new worksheet
-            usedRange.Copy(newWorksheet.Cells[1, 1]);
-
-            // Paste values only in the new worksheet
-            newWorksheet.PasteSpecial(XlPasteType.xlPasteValues, XlPasteSpecialOperation.xlPasteSpecialOperationNone);
-
-            // Get the data from the new worksheet
-            Range newWorksheetUsedRange = newWorksheet.UsedRange;
-            object[,] excelData = (object[,])newWorksheetUsedRange.Value;
-
-            // Convert the data to a DataTable
-            DataTable dataTable = new DataTable();
-            int rowCount = excelData.GetLength(0);
-            int columnCount = excelData.GetLength(1);
-
-            // Add columns to the DataTable
-            for (int col = 1; col <= columnCount; col++)
-            {
-                string columnName = excelData[1, col]?.ToString() ?? $"Column{col}";
-                dataTable.Columns.Add(columnName);
-            }
-
-            // Add rows to the DataTable
-            for (int row = 2; row <= rowCount; row++)
-            {
-                DataRow dataRow = dataTable.NewRow();
-                for (int col = 1; col <= columnCount; col++)
-                {
-                    dataRow[col - 1] = excelData[row, col];
-                }
-                dataTable.Rows.Add(dataRow);
-            }
-
-            // Close the workbook and release Excel objects
             workbook.Close();
             excelApp.Quit();
-            ReleaseObject(newWorksheetUsedRange);
-            ReleaseObject(newWorksheet);
-            ReleaseObject(usedRange);
-            ReleaseObject(sourceWorksheet);
-            ReleaseObject(workbook);
-            ReleaseObject(excelApp);
-
-            return dataTable;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
         }
 
-        private void ReleaseObject(object obj)
+        Console.ReadLine();
+    }
+
+    static void PrintDataTable(DataTable dataTable)
+    {
+        foreach (DataColumn column in dataTable.Columns)
         {
-            try
+            Console.Write($"{column.ColumnName}\t");
+        }
+        Console.WriteLine();
+
+        foreach (DataRow row in dataTable.Rows)
+        {
+            foreach (var item in row.ItemArray)
             {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
+                Console.Write($"{item}\t");
             }
-            catch (Exception ex)
-            {
-                obj = null;
-                throw ex;
-            }
-            finally
-            {
-                GC.Collect();
-            }
+            Console.WriteLine();
         }
     }
 }
