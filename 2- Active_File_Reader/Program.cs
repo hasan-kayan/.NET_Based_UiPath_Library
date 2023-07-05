@@ -3,6 +3,7 @@ using System.Data;
 using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
+using DataTable = System.Data.DataTable;
 
 namespace ExcelHelper
 {
