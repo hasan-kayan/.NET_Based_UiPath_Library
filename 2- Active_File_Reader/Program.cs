@@ -18,7 +18,7 @@ namespace ExcelDataReader
                 excelApp = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject("Excel.Application");
             }
             catch (COMException)
-            {
+            {   
                 Console.WriteLine("No active Excel instance found.");
                 return;
             }
@@ -46,6 +46,15 @@ namespace ExcelDataReader
             Range excelRange = worksheet.Range[range];
 
 
+            // Copy the values from source worksheet to new worksheet
+            // Data copied in a new worksheet 
+            Worksheet newWorksheet = workbook.Sheets.Add(Type.Missing, workbook.Sheets[workbook.Sheets.Count], Type.Missing, Type.Missing) as Worksheet;
+            worksheet.UsedRange.Copy(newWorksheet.Cells[1, 1]);
+            newWorksheet.PasteSpecial(XlPasteType.xlPasteValues, XlPasteSpecialOperation.xlPasteSpecialOperationNone);
+
+
+
+
 
 
             object[,] data = excelRange.Value;
@@ -61,7 +70,7 @@ namespace ExcelDataReader
                     object cellValue = data[row, col];
                     Console.WriteLine(cellValue + "\t");
                 }
-                Console.WriteLine();
+                Console.WriteLine(); 
             }
             
             // Clean up Excel objects
