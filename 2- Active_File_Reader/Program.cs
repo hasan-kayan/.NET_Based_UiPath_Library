@@ -9,14 +9,7 @@ class Program
     {
         string excelFilePath = @"C:\Users\hasan\Desktop\Büyük Excel\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx";
         string sheetName = "TC Hazine ve Maliye Bakanlığı y";
-
-        string startColumnName = "A";
-        int startColumnIndex = 1;
-
-        string endColumnName = "BJ";
-        int endColumnIndex = 20000;
-
-        int batchSize = 4000;
+        string range = "B4:BJ5000"; // Örnek aralık
 
         try
         {
@@ -46,47 +39,43 @@ class Program
             if (worksheet != null)
             {
                 Console.WriteLine("Sheet found. Retrieving cell values...");
+                Range cells = worksheet.Range[range];
+                object[,] cellValues = (object[,])cells.Value;
 
-                int rowCount = worksheet.Cells.Rows.Count;
-                int columnCount = worksheet.Cells.Columns.Count;
-
-                DataTable dataTable = new DataTable();
-
-                // Add columns to the DataTable
-                for (int col = 1; col <= columnCount; col++)
+                if (cellValues != null)
                 {
-                    dataTable.Columns.Add($"Column{col}");
-                }
+                    int rowCount = cellValues.GetLength(0);
+                    int columnCount = cellValues.GetLength(1);
 
-                // Read data in batches
-                for (int startRow = 1; startRow <= rowCount; startRow += batchSize)
-                {
-                    int endRow = Math.Min(startRow + batchSize - 1, rowCount);
+                    DataTable dataTable = new DataTable();
 
-                    string range = $"{startColumnName}{startRow}:{endColumnName}{endRow}";
-                    Range cells = worksheet.Range[range];
-                    object[,] cellValues = (object[,])cells.Value;
-
-                    if (cellValues != null)
+                    // Add columns to the DataTable
+                    for (int col = 1; col <= columnCount; col++)
                     {
-                        // Add cell values to the DataTable
-                        for (int row = 1; row <= cellValues.GetLength(0); row++)
-                        {
-                            DataRow dataRow = dataTable.NewRow();
-
-                            for (int col = 1; col <= cellValues.GetLength(1); col++)
-                            {
-                                object cellValue = cellValues[row, col];
-                                dataRow[col - 1] = cellValue;
-                            }
-
-                            dataTable.Rows.Add(dataRow);
-                        }
+                        dataTable.Columns.Add($"Column{col}");
                     }
-                }
 
-                Console.WriteLine("Cell values retrieved. DataTable output:");
-                PrintDataTable(dataTable);
+                    // Add cell values to the DataTable
+                    for (int row = 1; row <= rowCount; row++)
+                    {
+                        DataRow dataRow = dataTable.NewRow();
+
+                        for (int col = 1; col <= columnCount; col++)
+                        {
+                            object cellValue = cellValues[row, col];
+                            dataRow[col - 1] = cellValue;
+                        }
+
+                        dataTable.Rows.Add(dataRow);
+                    }
+
+                    Console.WriteLine("Cell values retrieved. DataTable output:");
+                    PrintDataTable(dataTable);
+                }
+                else
+                {
+                    Console.WriteLine("No cell values found in the specified range.");
+                }
             }
             else
             {
