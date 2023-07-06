@@ -9,16 +9,17 @@ class Program
     {
         string excelFilePath = @"C:\Users\hasan\Desktop\Büyük Excel\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx";
         string sheetName = "TC Hazine ve Maliye Bakanlığı y";
-        string range = "B4:BJ5000"; // Örnek aralık
+        string range = "B4:BJ200000"; // Örnek aralık
+        int rowsPerIteration = 4000;
 
         try
         {
-            Console.WriteLine("Opening the Excel file...");
+            Console.WriteLine("Excel dosyası açılıyor...");
             Application excelApp = new Application();
             Workbook workbook = null;
             Worksheet worksheet = null;
 
-            // Check if the Excel file is already open
+            // Excel dosyasının zaten açık olup olmadığını kontrol et
             foreach (Workbook openWorkbook in excelApp.Workbooks)
             {
                 if (openWorkbook.FullName == excelFilePath)
@@ -31,55 +32,67 @@ class Program
 
             if (workbook == null)
             {
-                Console.WriteLine("Excel file is not already open. Opening the file...");
+                Console.WriteLine("Excel dosyası zaten açık değil. Dosya açılıyor...");
                 workbook = excelApp.Workbooks.Open(excelFilePath);
                 worksheet = workbook.Sheets[sheetName];
             }
 
             if (worksheet != null)
             {
-                Console.WriteLine("Sheet found. Retrieving cell values...");
+                Console.WriteLine("Sayfa bulundu. Hücre değerleri alınıyor...");
                 Range cells = worksheet.Range[range];
-                object[,] cellValues = (object[,])cells.Value;
+                int rowCount = cells.Rows.Count;
+                int currentRow = 1;
 
-                if (cellValues != null)
+                while (currentRow <= rowCount)
                 {
-                    int rowCount = cellValues.GetLength(0);
-                    int columnCount = cellValues.GetLength(1);
+                    int endRow = Math.Min(currentRow + rowsPerIteration - 1, rowCount);
+                    string currentRange = $"B{currentRow}:BJ{endRow}";
+                    Range currentCells = worksheet.Range[currentRange];
+                    object[,] cellValues = (object[,])currentCells.Value;
 
-                    DataTable dataTable = new DataTable();
-
-                    // Add columns to the DataTable
-                    for (int col = 1; col <= columnCount; col++)
+                    if (cellValues != null)
                     {
-                        dataTable.Columns.Add($"Column{col}");
-                    }
+                        int columnCount = cellValues.GetLength(1);
 
-                    // Add cell values to the DataTable
-                    for (int row = 1; row <= rowCount; row++)
-                    {
-                        DataRow dataRow = dataTable.NewRow();
+                        DataTable dataTable = new DataTable();
 
+                        // DataTable'a sütunları ekle
                         for (int col = 1; col <= columnCount; col++)
                         {
-                            object cellValue = cellValues[row, col];
-                            dataRow[col - 1] = cellValue;
+                            dataTable.Columns.Add($"Column{col}");
                         }
 
-                        dataTable.Rows.Add(dataRow);
-                    }
+                        // Hücre değerlerini DataTable'a ekle
+                        for (int row = 1; row <= rowsPerIteration; row++)
+                        {
+                            if (currentRow > rowCount)
+                                break;
 
-                    Console.WriteLine("Cell values retrieved. DataTable output:");
-                    PrintDataTable(dataTable);
-                }
-                else
-                {
-                    Console.WriteLine("No cell values found in the specified range.");
+                            DataRow dataRow = dataTable.NewRow();
+
+                            for (int col = 1; col <= columnCount; col++)
+                            {
+                                object cellValue = cellValues[row, col];
+                                dataRow[col - 1] = cellValue;
+                            }
+
+                            dataTable.Rows.Add(dataRow);
+                            currentRow++;
+                        }
+
+                        Console.WriteLine("Hücre değerleri alındı. DataTable çıktısı:");
+                        PrintDataTable(dataTable);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Belirtilen aralıkta hücre değeri bulunamadı.");
+                    }
                 }
             }
             else
             {
-                Console.WriteLine("Specified sheet name not found.");
+                Console.WriteLine("Belirtilen sayfa adı bulunamadı.");
             }
 
             workbook.Close();
@@ -87,7 +100,7 @@ class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine("An error occurred: " + ex.Message);
+            Console.WriteLine("Bir hata oluştu: " + ex.Message);
         }
 
         Console.ReadLine();
