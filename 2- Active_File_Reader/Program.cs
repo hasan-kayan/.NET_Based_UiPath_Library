@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Data;
 using Microsoft.Office.Interop.Excel;
+using System.Data;
 using DataTable = System.Data.DataTable;
 
 class Program
@@ -9,55 +9,84 @@ class Program
     {
         string excelFilePath = @"C:\Users\hasan\Desktop\Büyük Excel\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx";
         string sheetName = "TC Hazine ve Maliye Bakanlığı y";
-        string range = "B4:Q247444"; // Örnek aralık
+
+        string startColumnName = "A";
+        int startColumnIndex = 1;
+
+        string endColumnName = "BJ";
+        int endColumnIndex = 20000;
+
+        int batchSize = 4000;
 
         try
         {
             Console.WriteLine("Opening the Excel file...");
             Application excelApp = new Application();
-            Workbook workbook = excelApp.Workbooks.Open(excelFilePath);
-            Worksheet worksheet = workbook.Sheets[sheetName];
+            Workbook workbook = null;
+            Worksheet worksheet = null;
+
+            // Check if the Excel file is already open
+            foreach (Workbook openWorkbook in excelApp.Workbooks)
+            {
+                if (openWorkbook.FullName == excelFilePath)
+                {
+                    workbook = openWorkbook;
+                    worksheet = workbook.Sheets[sheetName];
+                    break;
+                }
+            }
+
+            if (workbook == null)
+            {
+                Console.WriteLine("Excel file is not already open. Opening the file...");
+                workbook = excelApp.Workbooks.Open(excelFilePath);
+                worksheet = workbook.Sheets[sheetName];
+            }
 
             if (worksheet != null)
             {
                 Console.WriteLine("Sheet found. Retrieving cell values...");
-                Range cells = worksheet.Range[range];
-                object[,] cellValues = (object[,])cells.Value;
 
-                if (cellValues != null)
+                int rowCount = worksheet.Cells.Rows.Count;
+                int columnCount = worksheet.Cells.Columns.Count;
+
+                DataTable dataTable = new DataTable();
+
+                // Add columns to the DataTable
+                for (int col = 1; col <= columnCount; col++)
                 {
-                    int rowCount = cellValues.GetLength(0);
-                    int columnCount = cellValues.GetLength(1);
+                    dataTable.Columns.Add($"Column{col}");
+                }
 
-                    DataTable dataTable = new DataTable();
+                // Read data in batches
+                for (int startRow = 1; startRow <= rowCount; startRow += batchSize)
+                {
+                    int endRow = Math.Min(startRow + batchSize - 1, rowCount);
 
-                    // Add columns to the DataTable
-                    for (int col = 1; col <= columnCount; col++)
+                    string range = $"{startColumnName}{startRow}:{endColumnName}{endRow}";
+                    Range cells = worksheet.Range[range];
+                    object[,] cellValues = (object[,])cells.Value;
+
+                    if (cellValues != null)
                     {
-                        dataTable.Columns.Add($"Column{col}");
-                    }
-
-                    // Add cell values to the DataTable
-                    for (int row = 1; row <= rowCount; row++)
-                    {
-                        DataRow dataRow = dataTable.NewRow();
-
-                        for (int col = 1; col <= columnCount; col++)
+                        // Add cell values to the DataTable
+                        for (int row = 1; row <= cellValues.GetLength(0); row++)
                         {
-                            object cellValue = cellValues[row, col];
-                            dataRow[col - 1] = cellValue;
+                            DataRow dataRow = dataTable.NewRow();
+
+                            for (int col = 1; col <= cellValues.GetLength(1); col++)
+                            {
+                                object cellValue = cellValues[row, col];
+                                dataRow[col - 1] = cellValue;
+                            }
+
+                            dataTable.Rows.Add(dataRow);
                         }
-
-                        dataTable.Rows.Add(dataRow);
                     }
+                }
 
-                    Console.WriteLine("Cell values retrieved. DataTable output:");
-                    PrintDataTable(dataTable);
-                }
-                else
-                {
-                    Console.WriteLine("No cell values found in the specified range.");
-                }
+                Console.WriteLine("Cell values retrieved. DataTable output:");
+                PrintDataTable(dataTable);
             }
             else
             {
