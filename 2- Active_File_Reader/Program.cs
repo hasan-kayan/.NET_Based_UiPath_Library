@@ -106,7 +106,7 @@ class Program
         Console.ReadLine();
     }
 
-    static void PrintDataTable(DataTable dataTable)
+    static void PrintDataTable(DataTable dataTable) 
     {
         foreach (DataColumn column in dataTable.Columns)
         {
