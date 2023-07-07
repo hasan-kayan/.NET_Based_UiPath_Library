@@ -71,8 +71,8 @@ class Program
                 values = null;
                 range = null;
 
-                startColumnValue = endColumnValueFirst + 1;
-                endColumnValueFirst += rowsPerIteration;
+                startColumnValue = endColumnValue + 1;
+                endColumnValueFirst = endColumnValue + 4000;
             }
 
             // Excel dosyalarını kapat ve kaynakları serbest bırak
