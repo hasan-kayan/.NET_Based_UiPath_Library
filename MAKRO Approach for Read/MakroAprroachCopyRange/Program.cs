@@ -6,11 +6,12 @@ class Program
 {
     static void Main()
     {
-        Console.Write("Excel dosyasının yolunu girin: ");
-        string excelFilePath = Console.ReadLine();
 
-        Console.Write("Sayfa adını girin: ");
-        string sheetName = Console.ReadLine();
+        string excelFilePath = @"C:\Users\hasan\Desktop\Büyük Excel\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa (YENİ)_995_03.30.2023_11.50.47.xlsx";
+
+
+
+        string sheetName = "TC Hazine ve Maliye Bakanlığı y";
 
         // Excel uygulamasını başlat
         Excel.Application excelApp = new Excel.Application();
