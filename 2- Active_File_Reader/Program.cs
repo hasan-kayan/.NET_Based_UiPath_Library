@@ -55,7 +55,8 @@ class Program
 
             for (int i = 1; i <= loopCount; i++)
             {
-                string startRange = startColumnName + startColumnValue + ":" + endColumnName + endColumnValueFirst;
+                string startRange = startColumnName + startColumnValue + ":" + endColumnName + (int)endColumnValueFirst;
+                
 
                 Console.WriteLine(startRange + " okunuyor...");
 
@@ -71,8 +72,8 @@ class Program
                 values = null;
                 range = null;
 
-                startColumnValue = endColumnValue + 1;
-                endColumnValueFirst = endColumnValue + 4000;
+                startColumnValue = endColumnValueFirst + 1;
+                endColumnValueFirst = endColumnValueFirst + 4000;
             }
 
             // Excel dosyalarını kapat ve kaynakları serbest bırak
