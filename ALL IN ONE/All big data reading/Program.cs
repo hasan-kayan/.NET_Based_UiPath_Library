@@ -20,8 +20,8 @@ namespace All_big_data_reading
         {
             string excelFilePath = @"C:\Users\hasan\Desktop\Büyük Excel\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa_Robotik Süreç (1).xlsx";
             string sheetName = "TC Hazine ve Maliye Bakanlığı y";
-            string range = "B4:BJ24000";
-
+            string range = "B4:BJ120000";
+           
             // Excel uygulamasını başlat
             Console.WriteLine("New Application Starting...");
             Excel.Application excelApp = new Excel.Application();
@@ -61,7 +61,7 @@ namespace All_big_data_reading
                 // Yeni sayfayı aktif hale getirin
                 newWorksheet.Activate();
 
-                // Read the data
+             
                 Excel.Range excelRange = null;
 
                 // Yeni çalışma sayfasının null olup olmadığını kontrol edin
