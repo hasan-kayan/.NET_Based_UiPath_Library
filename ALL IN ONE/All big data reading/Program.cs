@@ -10,8 +10,8 @@ namespace All_big_data_reading
         {
             string excelFilePath = @"C:\Users\hasan\Desktop\Büyük Excel\Halkbank\TC Hazine ve Maliye Bakanlığı yazısı - İhracat bedelleri+IBKB_V2_Exa_Robotik Süreç (1).xlsx";
             string sheetName = "TC Hazine ve Maliye Bakanlığı y";
-            string range = "B4:BJ120000";
-
+            string range = "";
+            range = null;
             Console.WriteLine("New Application Starting...");
 
             Excel.Application excelApp = new Excel.Application();
@@ -121,7 +121,7 @@ namespace All_big_data_reading
             finally
             {
                 newWorksheet?.Activate();
-                workbook.Close();
+                workbook.Close(false); // False states that dont save changes !!!!!!!!!
                 excelApp.Quit();
 
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(newWorksheet);
